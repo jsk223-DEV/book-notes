@@ -1,0 +1,19 @@
+<%- include('partials/header.ejs') %>
+<main>
+    <% if(locals.searchResults) {%> <% searchResults.forEach(book => { %>
+    <div class="search-result">
+        <a href="/book-details?key=<%= book.key %>">
+            <img
+                src="https://covers.openlibrary.org/b/id/<%= book.cover_i %>-M.jpg"
+                class="sr-image"
+            />
+        </a>
+        <span class="sr-title"><%= book.title %></span>
+        <span class="sr-author"
+            ><%= typeof book.author_name == 'array' ? book.author_name[0] :
+            ''%></span
+        >
+    </div>
+    <% }) %> <% }%>
+</main>
+<%- include('partials/footer.ejs') %>
