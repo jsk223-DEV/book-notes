@@ -11,3 +11,6 @@ CREATE TABLE books (
 	genre VARCHAR(50),
 	tags VARCHAR(100)
 );
+
+ALTER TABLE books
+ADD key VARCHAR(50);

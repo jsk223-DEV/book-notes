@@ -1,19 +1,24 @@
 <%- include('partials/header.ejs') %>
 <main>
-    <% if(locals.searchResults) {%> <% searchResults.forEach(book => { %>
-    <div class="search-result">
-        <a href="/book-details?key=<%= book.key %>">
-            <img
-                src="https://covers.openlibrary.org/b/id/<%= book.cover_i %>-M.jpg"
-                class="sr-image"
-            />
-        </a>
-        <span class="sr-title"><%= book.title %></span>
-        <span class="sr-author"
-            ><%= typeof book.author_name == 'array' ? book.author_name[0] :
-            ''%></span
-        >
-    </div>
-    <% }) %> <% }%>
+	<div id="search_results">
+		<% if(locals.searchResults && searchResults.length > 0) {%> <% searchResults.forEach(book =>
+		{ %>
+		<div class="search-result">
+			<a class="sr-link" href="/book-details?key=<%= book.key %>">
+				<% if(book.cover_i) { %>
+				<img
+					src="https://covers.openlibrary.org/b/id/<%=book.cover_i %>-M.jpg"
+					class="sr-image"
+				/>
+				<% }else{ %> <img class="sr-image" src="/images/noBookCover.jpg" /><% } %>
+			</a>
+			<span class="sr-title"><%= book.title %></span>
+			<span class="sr-author"
+				><%= book.author_name ? book.author_name.toString().replaceAll(',', ', ') :
+				''%></span
+			>
+		</div>
+		<% }) %> <% } else { %> This bookshelf is looking a little empty. <% } %>
+	</div>
 </main>
 <%- include('partials/footer.ejs') %>

@@ -7,6 +7,7 @@
 	--BG: rgb(21, 21, 21);
 	--textColor: white;
 	--textColorOnA2: black;
+	--inputBG: rgb(60, 60, 60);
 }
 * {
 	box-sizing: border-box;
@@ -24,6 +25,7 @@ main {
 header {
 	width: 100%;
 	position: fixed;
+	z-index: 100;
 	top: 0;
 	height: 50px;
 	max-height: 50px;
@@ -49,6 +51,7 @@ header {
 		outline: none;
 		border: 1px solid black;
 		padding: 2px;
+		color: var(--accent2);
 	}
 	& #type_select {
 		padding: 0;
@@ -75,9 +78,7 @@ header {
 		}
 	}
 }
-.rating-radio:checked + label svg {
-	fill: yellow;
-}
+
 #saved_books {
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr;
@@ -86,10 +87,12 @@ header {
 	& .saved-book {
 		display: flex;
 		gap: 5px;
-		border: 1px solid var(--accent);
+		border: 1px solid var(--accent2);
 		border-radius: 15px;
 		padding-right: 5px;
-		box-shadow: 0 0 4px 2px rgb(35, 35, 35);
+		box-shadow: 0 0 4px 4px rgb(40, 40, 40);
+		font-size: 14px;
+		background-color: rgb(30, 30, 30);
 		& .sb-cover {
 			width: 180px;
 			height: 240px;
@@ -114,7 +117,7 @@ header {
 				gap: 2px;
 			}
 			& .sb-status {
-				padding: 2px 5px;
+				padding: 1px 5px;
 				border-radius: 7px;
 				text-decoration: none;
 				color: var(--textColor);
@@ -173,16 +176,20 @@ header {
 	}
 }
 
-.filter-bar {
+#filter_order {
 	padding-bottom: 15px;
 	margin: 0 15px;
 	width: auto;
-	border-bottom: 1px solid var(--accent);
+	border-bottom: 1px solid var(--accent2);
 	display: flex;
-	justify-content: flex-start;
-	align-items: center;
-	gap: 5px;
-	& > * {
+	justify-content: space-between;
+	& > div {
+		display: flex;
+		gap: 5px;
+		align-items: center;
+		width: fit-content;
+	}
+	& a {
 		border: none;
 		background-color: var(--buttonBG);
 		border-radius: 5px;
@@ -197,4 +204,223 @@ header {
 			background-color: var(--BG);
 		}
 	}
+}
+
+#search_results {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	gap: 15px;
+	& .search-result {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		height: fit-content;
+		align-items: center;
+		gap: 2px;
+		& .sr-title {
+			font-size: 17px;
+			text-align: center;
+		}
+		& .sr-author {
+			font-size: 14px;
+		}
+		& .sr-image {
+			width: 180px;
+			min-width: 180px;
+			height: 240px;
+			border-radius: 15px;
+			&:hover {
+				cursor: pointer;
+				outline: 1px solid var(--accent2);
+			}
+		}
+	}
+}
+
+#book_details {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 15px;
+	width: auto;
+	position: relative;
+	& #back_button {
+		background-color: var(--buttonBG);
+		padding: 5px 5px 2px 5px;
+		border-radius: 50%;
+		position: absolute;
+		top: 0;
+		left: 10px;
+		border: 1px outset var(--accent2);
+		&:hover {
+			background-color: var(--buttonBGHover);
+		}
+	}
+	& #bd_info {
+		display: flex;
+		flex-direction: row;
+		width: 80%;
+		justify-content: center;
+		align-items: center;
+		gap: 15px;
+		& #bd_first_cover {
+			width: 180px;
+			height: 240px;
+			border-radius: 15px;
+			box-shadow: 0 0 4px 4px rgb(35, 35, 35);
+		}
+		& #bd_info_text {
+			display: flex;
+			justify-content: center;
+			flex-direction: column;
+			align-items: center;
+			& #bd_date_added {
+				width: stretch;
+				text-align: right;
+				font-style: italic;
+				font-size: 14px;
+			}
+		}
+	}
+	& #bd_title {
+		font-size: 20px;
+		font-weight: 600;
+	}
+	& #bd_authors {
+		font-size: 14px;
+	}
+	& #bd_description {
+		text-indent: 4ch;
+	}
+	& form {
+		margin-top: 10px;
+		min-width: 85%;
+		& input,
+		textarea {
+			background-color: var(--inputBG);
+			border: 1px solid black;
+			outline: none;
+		}
+		& fieldset {
+			text-align: center;
+			padding: 15px;
+			border-radius: 15px;
+			border: 1px solid var(--accent2);
+			& legend {
+				padding: 0 5px;
+			}
+		}
+		& #bd_status_con {
+			background-color: var(--inputBG);
+			border-radius: 5px;
+			height: fit-content;
+			width: fit-content;
+			padding: 2px 0;
+			& label {
+				padding: 2px 5px;
+				border-radius: 5px;
+				font-size: 15px;
+				cursor: pointer;
+				&:hover {
+					background-color: var(--accent);
+				}
+			}
+			& input:checked + label {
+				background-color: var(--accent);
+			}
+		}
+		& #bd_covers {
+			display: flex;
+			justify-content: center;
+			flex-wrap: wrap;
+			gap: 10px;
+			& img {
+				width: 130px;
+				height: 190px;
+				border-radius: 15px;
+				cursor: pointer;
+				&:hover {
+					outline: 2px solid var(--accent2);
+				}
+			}
+			& .bd-cover-radio:checked + label img {
+				outline: 2px solid var(--accent2);
+			}
+		}
+		& #bd_save_inputs {
+			display: flex;
+			flex-direction: row;
+			gap: 10px;
+			margin-top: 10px;
+			& textarea {
+				width: 100%;
+				height: 200px;
+				padding: 5px;
+				resize: none;
+				border-radius: 5px;
+			}
+		}
+		& #bd_save_options {
+			display: flex;
+			flex-direction: column;
+			justify-content: space-around;
+			width: stretch;
+			align-items: left;
+			& #bd_genre_con {
+				text-align: left;
+				font-size: 15px;
+				& #bd_genre {
+					padding: 2px 5px;
+					border-radius: 5px;
+				}
+			}
+			& #bd_rating_radios {
+				text-align: left;
+				& .bd-rating-radio {
+					position: relative;
+					top: 2px;
+					&.active-rating + label svg {
+						fill: yellow;
+					}
+					& + label {
+						cursor: pointer;
+					}
+				}
+			}
+		}
+		& #bd_buttons {
+			display: flex;
+			gap: 5px;
+			justify-content: flex-end;
+		}
+		& .bd-button {
+			padding: 2px 5px;
+			background-color: var(--buttonBG);
+			border-radius: 5px;
+			width: fit-content;
+			color: var(--textColor);
+			border: 1px outset var(--accent2);
+			outline: none;
+			cursor: pointer;
+			&:hover {
+				background-color: var(--buttonBGHover);
+			}
+			&:active {
+				background-color: var(--BG);
+				border: 1px solid var(--accent);
+			}
+		}
+	}
+}
+
+footer {
+	height: 50px;
+	width: 100%;
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	font-size: 13px;
+	padding-right: 10px;
+	position: absolute;
+	bottom: 0;
 }

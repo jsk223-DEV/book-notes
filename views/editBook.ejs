@@ -20,41 +20,39 @@
 	</button>
 	<% if(locals.book) { %>
 	<div id="bd_info">
-		<% if(book.covers && book.covers.length > 0){ %>
+		<%if(book.cover_id){%>
 		<img
 			id="bd_first_cover"
-			src="https://covers.openlibrary.org/b/id/<%= book.covers[0] %>-M.jpg"
+			src="https://covers.openlibrary.org/b/id/<%= book.cover_id %>-M.jpg"
 		/>
-		<% }else{ %>
+		<%}else{%>
 		<img id="bd_first_cover" src="images/noBookCover.jpg" />
-
-		<% } %>
+		<%}%>
 		<div id="bd_info_text">
-			<h2 id="bd_title"><%= book.title ? book.title : '' %></h2>
-			<p id="bd_authors"><%= book.authors.toString().replaceAll(',', ', ') %></p>
+			<div id="bd_date_added">Date Added: <%= book.date_added ? book.date_added : '' %></div>
+			<h2 id="bd_title"><%= book.title ? book.title: '' %></h2>
+			<p id="bd_authors"><%= book.author ? book.author : '' %></p>
 			<p id="bd_description"><%= book.description ? book.description : '' %></p>
 		</div>
 	</div>
-	<form id="new_book_form" action="/save-book" method="POST">
+	<form id="new_book_form" action="/edit-book" method="POST">
+		<input type="hidden" name="id" value="<%= book.id %>" />
 		<fieldset>
-			<legend>Save Book</legend>
-			<input type="hidden" name="title" value="<%= book.title ? book.title : '' %>" />
-			<input
-				type="hidden"
-				name="author"
-				value="<%= book.authors.toString().replaceAll(',', ', ') %>"
-			/>
-			<input type="hidden" name="key" value="<%= book.key ? book.key : '' %>" />
+			<legend>Edit Book</legend>
 			<div
 				id="covers_save"
 				style="display: none"
 				data-offset="0"
+				data-selected="<%= book.cover_id ? book.cover_id : '' %>"
 				data-covers="<%= book.covers ? book.covers.join('a') : '' %>"
+				data-rating="<%= book.rating ? book.rating : 0 %>"
 			></div>
 			<div id="bd_covers"></div>
 			<button id="bd_load_covers" type="button" class="bd-button">Load Covers</button>
 			<div id="bd_save_inputs">
-				<textarea id="bd_review" placeholder="Review this book" name="review"></textarea>
+				<textarea id="bd_review" placeholder="Review this book" name="review">
+<%= book.review && book.review%></textarea
+				>
 				<div id="bd_save_options">
 					<div id="bd_genre_con">
 						<label for="bd_genre">Genre: </label>
@@ -62,12 +60,12 @@
 							type="text"
 							id="bd_genre"
 							name="genre"
-							value=""
+							value="<%= book.genre ? book.genre : '' %>"
 							list="genreSuggestions"
 							autocomplete="none"
 						/>
 					</div>
-					<% if(book.suggestedGenres.length) {%>
+					<% if(book.suggestedGenres.length > 0) { %>
 					<datalist id="genreSuggestions">
 						<%book.suggestedGenres.forEach(gen => {%>
 
@@ -107,30 +105,16 @@
 						<% } %>
 					</div>
 					<div id="bd_status_con">
-						<input
-							type="radio"
-							name="status"
-							value="to read"
-							id="tr_r"
-							style="display: none"
-							checked
-						/>
+						<input type="radio" name="status" value="to read" id="tr_r" style="display:
+						none" <%= book.status && book.status == 'to read' ? 'checked' : '' %> />
 						<label for="tr_r">To Read</label>
-						<input
-							type="radio"
-							name="status"
-							value="reading now"
-							id="rn_r"
-							style="display: none"
-						/>
+						<input type="radio" name="status" value="reading now" id="rn_r"
+						style="display: none" <%= book.status && book.status == 'reading now' ?
+						'checked' : '' %> />
 						<label for="rn_r">Reading Now</label>
-						<input
-							type="radio"
-							name="status"
-							value="have read"
-							id="hr_r"
-							style="display: none"
-						/>
+						<input type="radio" name="status" value="have read" id="hr_r"
+						style="display: none" <%= book.status && book.status == 'have read' ?
+						'checked' : '' %> />
 						<label for="hr_r">Have Read</label>
 					</div>
 					<div id="bd_buttons">
@@ -145,9 +129,17 @@
 </main>
 <script src="/js/script.js"></script>
 <script>
+	if (document.querySelector('#covers_save').dataset.rating != 0) {
+		updateRating(
+			document.querySelector(
+				`.bd-rating-radio[value="${document.querySelector('#covers_save').dataset.rating}"]`
+			)
+		);
+	}
 	document.querySelector('#bd_load_covers').addEventListener('click', () => {
 		loadCovers(document.querySelector('#covers_save'));
 	});
 	loadCovers(document.querySelector('#covers_save'));
 </script>
+
 <%- include('partials/footer.ejs') %>
