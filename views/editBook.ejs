@@ -61,12 +61,12 @@
 							id="bd_genre"
 							name="genre"
 							value="<%= book.genre ? book.genre : '' %>"
-							list="genreSuggestions"
+							list="genre_suggestions"
 							autocomplete="none"
 						/>
 					</div>
 					<% if(book.suggestedGenres.length > 0) { %>
-					<datalist id="genreSuggestions">
+					<datalist id="genre_suggestions">
 						<%book.suggestedGenres.forEach(gen => {%>
 
 						<option value="<%= gen %>"></option>

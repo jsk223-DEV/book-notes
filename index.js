@@ -19,10 +19,27 @@ const db = new pg.Client({
 
 db.connect();
 
-const filterOrder = {
-	filter: 'all',
-	order: 'id DESC',
+const searchPageInfo = {};
+
+searchPageInfo.setDefault = () => {
+	searchPageInfo.page = 1;
+	searchPageInfo.limit = 10;
+	searchPageInfo.offset = 0;
+	searchPageInfo.searchString = '';
+	searchPageInfo.type = 'q';
+	searchPageInfo.minReached = true;
+	searchPageInfo.maxReached = false;
+	searchPageInfo.numFound = 0;
 };
+searchPageInfo.setDefault();
+
+const filterOrder = {};
+
+filterOrder.setDefault = () => {
+	filterOrder.filter = 'all';
+	filterOrder.order = 'id DESC';
+};
+filterOrder.setDefault();
 
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
@@ -41,10 +58,10 @@ app.get('/', async (req, res) => {
 		if (filterOrder.filter == 'all') {
 			result = await db.query(`SELECT * FROM books ORDER BY ${filterOrder.order}`);
 		} else {
-			result = await db.query(`SELECT * FROM books WHERE status = $1 ORDER BY $2`, [
-				filterOrder.filter,
-				filterOrder.order,
-			]);
+			result = await db.query(
+				`SELECT * FROM books WHERE status = $1 ORDER BY ${filterOrder.order}`,
+				[filterOrder.filter]
+			);
 		}
 
 		res.render('index.ejs', {
@@ -58,23 +75,62 @@ app.get('/', async (req, res) => {
 	}
 });
 
-app.post('/search', async (req, res) => {
+app.get('/search', async (req, res) => {
+	// console.log(searchPageInfo);
+	try {
+		const result = await axios.get(
+			`${searchUrl}/search.json?${searchPageInfo.type}=${searchPageInfo.searchString}&fields=author_name,title,key,cover_i&limit=${searchPageInfo.limit}&offset=${searchPageInfo.offset}`
+		);
+		searchPageInfo.numFound = result.data.numFound;
+
+		searchPageInfo.minReached = searchPageInfo.offset < searchPageInfo.limit;
+		searchPageInfo.maxReached =
+			searchPageInfo.offset + searchPageInfo.limit > searchPageInfo.numFound;
+
+		res.render('searchResults.ejs', { searchResults: result.data.docs, searchPageInfo });
+	} catch (err) {
+		console.log(err);
+		res.redirect('/');
+	}
+	//console.log(result.data.docs);
+});
+
+app.post('/search/new', (req, res) => {
 	const search = req.body.search;
 	const type = req.body.typeOfSearch;
-	const result = await axios.get(
-		`${searchUrl}/search.json?${type}=${search.replace(
-			' ',
-			'+'
-		)}&fields=author_name,title,key,cover_i&limit=10`
-	);
-	//console.log(result.data.docs);
-	res.render('searchResults.ejs', { searchResults: result.data.docs });
+	searchPageInfo.setDefault();
+	if (search) {
+		searchPageInfo.searchString = search;
+	}
+	if (type) {
+		searchPageInfo.type = type;
+	}
+	res.redirect('/search');
+});
+
+app.get('/search/author', (req, res) => {
+	let author = req.query.name;
+	searchPageInfo.setDefault();
+	searchPageInfo.type = 'author';
+	searchPageInfo.searchString = author;
+	res.redirect('/search');
+});
+
+app.get('/search/last-page', (req, res) => {
+	searchPageInfo.offset -= searchPageInfo.limit;
+	searchPageInfo.page -= 1;
+	res.redirect('/search');
+});
+app.get('/search/next-page', (req, res) => {
+	searchPageInfo.offset += searchPageInfo.limit;
+	searchPageInfo.page += 1;
+	res.redirect('/search');
 });
 
 app.get('/book-details', async (req, res) => {
 	try {
 		const key = req.query.key;
-		const result = await axios.get(`${searchUrl}/${key}.json`);
+		const result = await axios.get(`${searchUrl}${key}.json`);
 		result.data.authors = await parseAuthors(result.data.authors);
 		result.data.description = parseDesrciption(result.data.description);
 		result.data.suggestedGenres = getGenres(result.data.subjects);
@@ -108,6 +164,7 @@ app.post('/save-book', async (req, res) => {
 				req.body.key,
 			]
 		);
+		filterOrder.setDefault();
 		res.redirect('/');
 	} catch (err) {
 		console.log(err);
@@ -120,7 +177,9 @@ app.get('/edit-book', async (req, res) => {
 
 	try {
 		const bookData = await db.query('SELECT * FROM books WHERE id = $1', [id]);
-		const bookApiData = await axios.get(`${searchUrl}/${bookData.rows[0].key}.json`);
+		// console.log('database queried');
+		const bookApiData = await axios.get(`${searchUrl}${bookData.rows[0].key}.json`);
+		// console.log('API queried');
 		bookData.rows[0].description = parseDesrciption(bookApiData.data.description);
 		if (bookApiData.data.covers) {
 			bookApiData.data.covers.forEach(
@@ -150,6 +209,8 @@ app.post('/edit-book', async (req, res) => {
 				parseInt(req.body.id),
 			]
 		);
+
+		filterOrder.setDefault();
 		res.redirect('/');
 	} catch (err) {
 		console.log(err);
@@ -166,6 +227,8 @@ app.get('/update-status', async (req, res) => {
 		let statusI = statuses.findIndex((s) => s == status);
 		let newStatus = statuses[(statusI + 1) % statuses.length];
 		await db.query('UPDATE books SET status = $1 WHERE id = $2', [newStatus, id]);
+
+		filterOrder.setDefault();
 		res.redirect('/');
 	} catch (err) {
 		console.log(err);
@@ -226,7 +289,7 @@ function getGenres(subjects) {
 
 async function parseAuthors(authors) {
 	const a = [];
-	if (!authors) {
+	if (!authors || authors.length == 0 || typeof authors != 'object') {
 		return a;
 	}
 	for (let i = 0; i < authors.length; i++) {

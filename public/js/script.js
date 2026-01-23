@@ -13,7 +13,7 @@ function loadCovers(save) {
 	const loadButton = document.querySelector('#bd_load_covers');
 	let coverCon = document.querySelector('#bd_covers');
 	for (let i = offset; i < offset + limit; i++) {
-		if (i == covers.length - 1) {
+		if (i == covers.length) {
 			loadButton.style.display = 'none';
 			return;
 		}
