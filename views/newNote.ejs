@@ -1,0 +1,32 @@
+<%- include('partials/header.ejs') %>
+<main>
+	<form action="/save-note" method="POST" id="nn_form">
+		<input type="hidden" name="bookId" value="<%= locals.book && book.id %>" />
+		<fieldset>
+			<legend>New Note For <%= locals.book && book.title %></legend>
+			<div id="nn_body_con">
+				<input type="text" id="nn_title" name="title" placeholder="Note Title" />
+				<textarea id="nn_note_text" name="text" placeholder="Body of Note"></textarea>
+			</div>
+			<div id="nn_options_con">
+				<div>
+					<label for="nn_chapter">Chapter: </label>
+					<input id="nn_chapter" type="text" name="chapter" />
+				</div>
+				<div>
+					<label for="nn_page">Page: </label>
+					<input id="nn_page" type="text" name="page" />
+				</div>
+				<input type="submit" class="nn-button" id="nn_save_button" value="Save" />
+				<input
+					type="button"
+					class="nn-button"
+					id="nn_cancel_button"
+					value="Cancel"
+					onclick="goBack()"
+				/>
+			</div>
+		</fieldset>
+	</form>
+</main>
+<%- include('partials/footer.ejs') %>

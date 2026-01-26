@@ -41,6 +41,8 @@ filterOrder.setDefault = () => {
 };
 filterOrder.setDefault();
 
+app.set('view engine', 'ejs');
+
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 
@@ -71,60 +73,42 @@ app.get('/', async (req, res) => {
 		});
 	} catch (err) {
 		console.log(err);
-		res.render('index.ejs');
+		res.render('index');
 	}
 });
 
 app.get('/search', async (req, res) => {
 	// console.log(searchPageInfo);
 	try {
+		if (req.query.search) {
+			searchPageInfo.setDefault();
+			searchPageInfo.searchString = req.query.search;
+			searchPageInfo.type = req.query.type;
+		}
+		if (req.query.last_page) {
+			searchPageInfo.offset -= searchPageInfo.limit;
+			searchPageInfo.page -= 1;
+		}
+		if (req.query.next_page) {
+			searchPageInfo.offset += searchPageInfo.limit;
+			searchPageInfo.page += 1;
+		}
 		const result = await axios.get(
 			`${searchUrl}/search.json?${searchPageInfo.type}=${searchPageInfo.searchString}&fields=author_name,title,key,cover_i&limit=${searchPageInfo.limit}&offset=${searchPageInfo.offset}`
 		);
+		// result.data.docs.forEach((doc) => console.log(doc.author_name));
 		searchPageInfo.numFound = result.data.numFound;
 
 		searchPageInfo.minReached = searchPageInfo.offset < searchPageInfo.limit;
 		searchPageInfo.maxReached =
 			searchPageInfo.offset + searchPageInfo.limit > searchPageInfo.numFound;
 
-		res.render('searchResults.ejs', { searchResults: result.data.docs, searchPageInfo });
+		res.render('searchResults', { searchResults: result.data.docs, searchPageInfo });
 	} catch (err) {
 		console.log(err);
 		res.redirect('/');
 	}
 	//console.log(result.data.docs);
-});
-
-app.post('/search/new', (req, res) => {
-	const search = req.body.search;
-	const type = req.body.typeOfSearch;
-	searchPageInfo.setDefault();
-	if (search) {
-		searchPageInfo.searchString = search;
-	}
-	if (type) {
-		searchPageInfo.type = type;
-	}
-	res.redirect('/search');
-});
-
-app.get('/search/author', (req, res) => {
-	let author = req.query.name;
-	searchPageInfo.setDefault();
-	searchPageInfo.type = 'author';
-	searchPageInfo.searchString = author;
-	res.redirect('/search');
-});
-
-app.get('/search/last-page', (req, res) => {
-	searchPageInfo.offset -= searchPageInfo.limit;
-	searchPageInfo.page -= 1;
-	res.redirect('/search');
-});
-app.get('/search/next-page', (req, res) => {
-	searchPageInfo.offset += searchPageInfo.limit;
-	searchPageInfo.page += 1;
-	res.redirect('/search');
 });
 
 app.get('/book-details', async (req, res) => {
@@ -141,7 +125,7 @@ app.get('/book-details', async (req, res) => {
 			);
 		}
 
-		res.render('bookDetails.ejs', { book: result.data });
+		res.render('bookDetails', { book: result.data });
 	} catch (err) {
 		console.log(err);
 		res.redirect('/');
@@ -189,7 +173,7 @@ app.get('/edit-book', async (req, res) => {
 		}
 		bookData.rows[0].suggestedGenres = getGenres(bookApiData.data.subjects);
 
-		res.render('editBook.ejs', { book: bookData.rows[0] });
+		res.render('editBook', { book: bookData.rows[0] });
 	} catch (err) {
 		console.log(err);
 		res.redirect('/');
@@ -236,6 +220,99 @@ app.get('/update-status', async (req, res) => {
 	}
 });
 
+app.get('/notes', async (req, res) => {
+	try {
+		let id = parseInt(req.query.id);
+		// let result = await db.query(
+		// 	`SELECT notes.id AS note_id, book_id, notes.text AS note_text, notes.title AS note_title, notes.date_added AS note_date, chapter, page_number, books.title AS book_title, cover_id
+		//     FROM notes
+		//     INNER JOIN books
+		//     ON notes.book_id = books.id
+		//     WHERE books.id = $1`,
+		// 	[id]
+		// );
+		let notesResult = await db.query(
+			'SELECT * FROM notes WHERE book_id = $1 ORDER BY id DESC',
+			[id]
+		);
+		let bookResult = await db.query('SELECT title, cover_id, id FROM books WHERE id = $1', [
+			id,
+		]);
+		//console.log(result.rows);
+		res.render('notes', { notes: notesResult.rows, bookInfo: bookResult.rows[0] });
+	} catch (err) {
+		console.log(err);
+		res.redirect('/');
+	}
+});
+
+app.get('/new-note', async (req, res) => {
+	let id = parseInt(req.query.id);
+	try {
+		let book = await db.query('SELECT title, id FROM books WHERE id = $1', [id]);
+		res.render('newNote', { book: book.rows[0] });
+	} catch (err) {
+		console.log(err);
+		res.redirect('/');
+	}
+});
+
+app.get('/edit-note', async (req, res) => {
+	let id = parseInt(req.query.id);
+	try {
+		let note = await db.query('SELECT * FROM notes WHERE id = $1', [id]);
+		res.render('editNote', { note: note.rows[0] });
+	} catch (err) {
+		console.log(err);
+		res.redirect('/');
+	}
+});
+
+app.post('/save-note', async (req, res) => {
+	try {
+		await db.query(
+			'INSERT INTO notes (book_id, text, title, date_added, chapter, page_number) VALUES ($1, $2, $3, $4, $5, $6)',
+			[
+				req.body.bookId,
+				req.body.text,
+				req.body.title,
+				format(new Date(), 'MMMM d, y'),
+				req.body.chapter,
+				req.body.page,
+			]
+		);
+		res.redirect(`/notes?id=${req.body.bookId}`);
+	} catch (err) {
+		console.log(err);
+		res.redirect('/');
+	}
+});
+
+app.post('/edit-note', async (req, res) => {
+	let noteId = parseInt(req.body.noteId);
+	try {
+		await db.query(
+			'UPDATE notes SET text = $1, title = $2, chapter = $3, page_number = $4 WHERE id = $5',
+			[req.body.text, req.body.title, req.body.chapter, req.body.page, noteId]
+		);
+		res.redirect(`/notes?id=${req.body.bookId}`);
+	} catch (err) {
+		console.log(err);
+		res.redirect('/');
+	}
+});
+
+app.get('/delete-note', async (req, res) => {
+	let id = parseInt(req.query.id);
+	try {
+		const note = await db.query('DELETE FROM notes WHERE id = $1 RETURNING book_id', [id]);
+		res.redirect(`/notes?id=${note.rows[0].book_id}`);
+	} catch (err) {
+		console.log(err);
+		res.redirect('/');
+	}
+});
+
 app.get('/delete-book', async (req, res) => {
 	try {
 		const id = req.query.id;
@@ -245,6 +322,10 @@ app.get('/delete-book', async (req, res) => {
 		console.log(err);
 		res.redirect('/');
 	}
+});
+
+app.use((req, res) => {
+	res.status(404).send('404 - Page Not Found');
 });
 
 app.listen(port, () => {

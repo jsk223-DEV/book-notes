@@ -4,10 +4,10 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="stylesheet" href="styles/style.css" />
-		<link rel="apple-touch-icon" sizes="180x180" href="images/favicon/apple-touch-icon.png" />
+		<!-- <link rel="apple-touch-icon" sizes="180x180" href="images/favicon/apple-touch-icon.png" />
 		<link rel="icon" type="image/png" sizes="32x32" href="images/favicon/favicon-32x32.png" />
 		<link rel="icon" type="image/png" sizes="16x16" href="images/favicon/favicon-16x16.png" />
-		<link rel="manifest" href="images/favicon/site.webmanifest" />
+		<link rel="manifest" href="images/favicon/site.webmanifest" /> -->
 		<title>My Library</title>
 	</head>
 	<body>
@@ -30,15 +30,21 @@
 					/></svg
 				>My Library</span
 			>
-			<form method="POST" action="/search/new">
+			<div id="search_bar">
 				<label for="search_input">Search: </label>
-				<select name="typeOfSearch" id="type_select">
+				<select name="type" id="type_select">
 					<option value="q">Any</option>
 					<option value="author">Author</option>
 					<option value="title">Title</option>
 				</select>
-				<input type="search" name="search" id="search_input" aria-autocomplete="none" />
-				<button onclick="this.parentElement.submit()" id="search_submit">
+				<input
+					type="search"
+					name="search"
+					id="search_input"
+					aria-autocomplete="none"
+					onsearch="submitSearch(this.parentElement)"
+				/>
+				<button onclick="submitSearch(this.parentElement)" id="search_submit">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						width="15"
@@ -55,7 +61,7 @@
 						<circle cx="11" cy="11" r="8" />
 					</svg>
 				</button>
-			</form>
+			</div>
 			<a href="/" id="home_link"
 				><svg
 					xmlns="http://www.w3.org/2000/svg"

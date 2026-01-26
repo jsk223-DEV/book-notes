@@ -191,17 +191,6 @@ header {
 	}
 }
 
-/* @media (max-width: 1080px) {
-	#saved_books {
-		grid-template-columns: 1fr 1fr;
-	}
-}
-@media (max-width: 775px) {
-	#saved_books {
-		grid-template-columns: 1fr;
-	}
-} */
-
 #filter_order {
 	padding-bottom: 15px;
 	margin: 0 15px;
@@ -230,6 +219,15 @@ header {
 			border: 1px solid var(--accent);
 			background-color: var(--BG);
 		}
+	}
+}
+
+#search_string {
+	font-size: 17px;
+	width: 100%;
+	text-align: center;
+	& #string {
+		font-style: italic;
 	}
 }
 
@@ -476,6 +474,202 @@ header {
 				background-color: var(--BG);
 				border: 1px solid var(--accent);
 			}
+		}
+	}
+}
+
+#notes_main {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	position: relative;
+	& #back_button {
+		background-color: var(--buttonBG);
+		padding: 5px 5px 2px 5px;
+		border-radius: 50%;
+		position: absolute;
+		top: 70px;
+		left: 10px;
+		border: 1px outset var(--accent2);
+		&:hover {
+			background-color: var(--buttonBGHover);
+		}
+	}
+	& #n_book_info {
+		display: flex;
+		width: 80%;
+		justify-content: center;
+		align-items: center;
+		gap: 10px;
+		position: relative;
+		& #n_cover {
+			width: 180px;
+			height: 240px;
+			border-radius: 15px;
+			box-shadow: 0 0 4px 4px rgb(35, 35, 35);
+		}
+		& #n_book_title {
+			font-size: 20px;
+			font-weight: 600;
+		}
+		& #new_note_button {
+			position: absolute;
+			bottom: -20px;
+			right: -5%;
+			padding: 2px 5px;
+			border: 1px outset var(--accent2);
+			background-color: var(--buttonBG);
+			border-radius: 5px;
+			color: var(--textColor);
+			text-decoration: none;
+			&:hover {
+				background-color: var(--buttonBGHover);
+			}
+		}
+	}
+	& #notes {
+		width: 90%;
+		border-top: 1px solid var(--accent2);
+		padding-top: 20px;
+		margin-top: 30px;
+	}
+	& .note {
+		width: 100%;
+		height: fit-content;
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+		padding-bottom: 15px;
+		margin-bottom: 10px;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+		&:last-of-type {
+			border-bottom: none;
+		}
+		& .n-details {
+			display: flex;
+			flex-direction: column;
+			justify-content: flex-start;
+			align-items: flex-start;
+			font-size: 14px;
+			padding-top: 5px;
+			gap: 3px;
+			& .n-date {
+				font-style: italic;
+				opacity: 0.7;
+			}
+			& .n-location {
+				opacity: 0.7;
+			}
+			& .n-buttons {
+				display: flex;
+				gap: 5px;
+				& a {
+					padding: 1px 5px;
+					font-size: 14px;
+					color: var(--textColor);
+					text-decoration: none;
+					border: 1px outset var(--accent2);
+					background-color: var(--buttonBG);
+					border-radius: 5px;
+					&:hover {
+						background-color: var(--buttonBGHover);
+					}
+					&.n-delete {
+						color: red;
+					}
+				}
+			}
+		}
+		& .n-body {
+			display: flex;
+			flex-direction: column;
+			width: 70%;
+			height: fit-content;
+			justify-content: flex-start;
+			align-items: flex-start;
+			& .n-title {
+				font-size: 19px;
+				font-weight: 600;
+				margin-bottom: 5px;
+			}
+			& .n-text {
+				font-size: 15px;
+				text-indent: 2ch;
+			}
+		}
+	}
+}
+
+#nn_form {
+	width: 85%;
+	margin: 10px auto 0 auto;
+	& input,
+	textarea {
+		background-color: var(--inputBG);
+		border: 1px solid black;
+		outline: none;
+		padding: 2px 5px;
+		border-radius: 5px;
+	}
+	& fieldset {
+		text-align: center;
+		padding: 15px;
+		border-radius: 15px;
+		border: 1px solid var(--accent2);
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		gap: 15px;
+		& legend {
+			padding: 0 5px;
+			font-size: 16px;
+		}
+		& > div {
+			display: flex;
+			flex-direction: column;
+			gap: 5px;
+			&:last-of-type {
+				justify-content: center;
+				gap: 15px;
+			}
+		}
+		& #nn_body_con {
+			width: 100%;
+		}
+		& #nn_options_con {
+			align-items: flex-end;
+			flex-direction: row;
+			& input[type='text'] {
+				width: 40px;
+				font-size: 15px;
+			}
+		}
+		& #nn_title {
+			font-size: 17px;
+		}
+		& #nn_note_text {
+			resize: none;
+			min-width: 100%;
+			height: 400px;
+			font-size: 16px;
+		}
+	}
+
+	& .nn-button {
+		width: fit-content;
+		padding: 2px 5px;
+		background-color: var(--buttonBG);
+		border-radius: 5px;
+		color: var(--textColor);
+		border: 1px outset var(--accent2);
+		outline: none;
+		cursor: pointer;
+		&:hover {
+			background-color: var(--buttonBGHover);
+		}
+		&:active {
+			background-color: var(--BG);
+			border: 1px solid var(--accent);
 		}
 	}
 }

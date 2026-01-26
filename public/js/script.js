@@ -58,3 +58,9 @@ function updateRating(ele) {
 		}
 	}
 }
+
+function submitSearch(parent) {
+	const type = parent.querySelector('#type_select');
+	const search = parent.querySelector('#search_input');
+	window.location.href = `/search?type=${type.value}&search=${search.value}`;
+}

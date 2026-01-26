@@ -1,0 +1,60 @@
+<%- include('partials/header.ejs') %>
+<main id="notes_main">
+	<button id="back_button" onclick="goBack()">
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			width="24"
+			height="24"
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="white"
+			stroke-width="2"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			class="lucide lucide-arrow-big-left-icon lucide-arrow-big-left"
+		>
+			<path
+				d="M13 9a1 1 0 0 1-1-1V5.061a1 1 0 0 0-1.811-.75l-6.835 6.836a1.207 1.207 0 0 0 0 1.707l6.835 6.835a1 1 0 0 0 1.811-.75V16a1 1 0 0 1 1-1h6a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1z"
+			/>
+		</svg>
+	</button>
+	<div id="n_book_info">
+		<% if(locals.bookInfo.cover_id){ %>
+		<img
+			id="n_cover"
+			src="https://covers.openlibrary.org/b/id/<%=  bookInfo.cover_id %>-M.jpg"
+		/>
+
+		<% }else{ %>
+		<img id="n_cover" src="images/noBookCover.jpg" />
+
+		<% } %>
+		<h2 id="n_book_title"><%= locals.bookInfo && bookInfo.title %></h2>
+		<a id="new_note_button" href="/new-note?id=<%= locals.bookInfo.id && bookInfo.id %>"
+			>New Note</a
+		>
+	</div>
+	<div id="notes">
+		<% if(locals.notes && notes.length > 0) { notes.forEach(note => {%>
+		<div class="note">
+			<div class="n-details">
+				<span class="n-date"><%= note.date_added %></span>
+				<span class="n-location">
+					<% if(note.chapter) { %> Chapter: <%= note.chapter %> <% } if (note.page_number)
+					{%> Page: <%= note.page_number %> <% } %></span
+				>
+
+				<div class="n-buttons">
+					<a href="/edit-note?id=<%= note.id %>" class="n-edit">Edit</a>
+					<a href="/delete-note?id=<%= note.id %>" class="n-delete">Delete</a>
+				</div>
+			</div>
+			<div class="n-body">
+				<span class="n-title"><%= note.title ? note.title : 'untitled' %></span>
+				<span class="n-text"><%= note.text ? note.text : 'empty note' %></span>
+			</div>
+		</div>
+		<% })} %>
+	</div>
+</main>
+<%- include('partials/footer.ejs') %>

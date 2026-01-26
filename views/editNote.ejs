@@ -1,0 +1,51 @@
+<%- include('partials/header.ejs') %>
+<main>
+	<form action="/edit-note" method="POST" id="nn_form">
+		<input type="hidden" name="noteId" value="<%= locals.note && note.id %>" />
+		<input type="hidden" name="bookId" value="<%= locals.note && note.book_id %>" />
+		<fieldset>
+			<legend>Edit Note</legend>
+			<div id="enn_body_con">
+				<input
+					type="text"
+					id="nn_title"
+					name="title"
+					placeholder="Note Title"
+					value="<%= locals.note.title ? note.title : ''  %>"
+				/>
+				<textarea id="nn_note_text" name="text" placeholder="Body of Note">
+<%= locals.note.text ? note.text : ''  %></textarea
+				>
+			</div>
+			<div id="nn_options_con">
+				<div>
+					<label for="nn_chapter">Chapter: </label>
+					<input
+						id="nn_chapter"
+						type="text"
+						name="chapter"
+						value="<%= locals.note.chapter ? note.chapter : ''  %>"
+					/>
+				</div>
+				<div>
+					<label for="nn_page">Page: </label>
+					<input
+						id="nn_page"
+						type="text"
+						name="page"
+						value="<%= locals.note.page_number ? note.page_number : ''  %>"
+					/>
+				</div>
+				<input type="submit" class="nn-button" id="nn_save_button" value="Save" />
+				<input
+					type="button"
+					class="nn-button"
+					id="nn_cancel_button"
+					value="Cancel"
+					onclick="goBack()"
+				/>
+			</div>
+		</fieldset>
+	</form>
+</main>
+<%- include('partials/footer.ejs') %>

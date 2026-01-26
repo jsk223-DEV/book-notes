@@ -1,5 +1,6 @@
 <%- include('partials/header.ejs') %>
 <main>
+    <div id="search_string">Search Results for: <span id="string"><%= locals.searchPageInfo ? searchPageInfo.searchString : '' %></span></div>
 	<div id="search_results">
 		<% if(locals.searchResults && searchResults.length > 0) {%> <% searchResults.forEach(book =>
 		{ %>
@@ -14,16 +15,19 @@
 			</a>
 			<span class="sr-title"><%= book.title %></span>
             <% if(book.author_name){ %>
-			<a class="sr-author" href="/search/author?name=<%= book.author_name %>"
-				><%= book.author_name.toString().replaceAll(',', ', ')%></a>
-			
+                <div class="sr-authors">
+            <% for(let i = 0; i < book.author_name.length; i++){ if(i > 4){break;} let author = book.author_name[i];%>
+			<a class="sr-author" href="/search?search=<%= author %>&type=author"
+				><%= author %></a><%= i < book.author_name.length - 1 ? ', ' : ''%>
+			<% } %>
+            </div>
             <% } %>
 		</div>
 		<% }) %> <% } else { %> This bookshelf is looking a little empty. <% } %>
 	</div>
     <% if(locals.searchPageInfo && (!searchPageInfo.minReached || !searchPageInfo.maxReached)){%>
 	<div id="page_nav_con">
-		<a class="page-nav left" <%= searchPageInfo.minReached ? '' : 'href=/search/last-page' %>
+		<a class="page-nav left" <%= searchPageInfo.minReached ? '' : 'href=/search?last_page=true' %>
 			><svg
 				xmlns="http://www.w3.org/2000/svg"
 				width="24"
@@ -39,7 +43,7 @@
 				<path d="m15 18-6-6 6-6" /></svg
 		></a>
 		<span class="current-page"><%= searchPageInfo.page ? searchPageInfo.page : ''%></span>
-		<a class="page-nav right" <%= searchPageInfo.maxReached ? '' : 'href=/search/next-page' %>
+		<a class="page-nav right" <%= searchPageInfo.maxReached ? '' : 'href=/search?next_page=true' %>
 			><svg
 				xmlns="http://www.w3.org/2000/svg"
 				width="24"
