@@ -41,6 +41,8 @@ filterOrder.setDefault = () => {
 };
 filterOrder.setDefault();
 
+let theme = 'dark-theme';
+
 app.set('view engine', 'ejs');
 
 app.use(express.static('public'));
@@ -66,15 +68,26 @@ app.get('/', async (req, res) => {
 			);
 		}
 
-		res.render('index.ejs', {
+		res.render('index', {
 			books: result.rows,
 			filter: filterOrder.filter,
 			order: filterOrder.order,
+			theme,
 		});
 	} catch (err) {
 		console.log(err);
 		res.render('index');
 	}
+});
+
+app.get('/change-theme', (req, res) => {
+	if (theme == 'dark-theme') {
+		theme = 'light-theme';
+	} else {
+		theme = 'dark-theme';
+	}
+	// res.redirect(req.rawHeaders[req.rawHeaders.findIndex((x) => x == 'Referer') + 1]);
+	res.end();
 });
 
 app.get('/search', async (req, res) => {
@@ -103,7 +116,7 @@ app.get('/search', async (req, res) => {
 		searchPageInfo.maxReached =
 			searchPageInfo.offset + searchPageInfo.limit > searchPageInfo.numFound;
 
-		res.render('searchResults', { searchResults: result.data.docs, searchPageInfo });
+		res.render('searchResults', { searchResults: result.data.docs, searchPageInfo, theme });
 	} catch (err) {
 		console.log(err);
 		res.redirect('/');
@@ -125,7 +138,7 @@ app.get('/book-details', async (req, res) => {
 			);
 		}
 
-		res.render('bookDetails', { book: result.data });
+		res.render('bookDetails', { book: result.data, theme });
 	} catch (err) {
 		console.log(err);
 		res.redirect('/');
@@ -173,7 +186,7 @@ app.get('/edit-book', async (req, res) => {
 		}
 		bookData.rows[0].suggestedGenres = getGenres(bookApiData.data.subjects);
 
-		res.render('editBook', { book: bookData.rows[0] });
+		res.render('editBook', { book: bookData.rows[0], theme });
 	} catch (err) {
 		console.log(err);
 		res.redirect('/');
@@ -212,7 +225,7 @@ app.get('/update-status', async (req, res) => {
 		let newStatus = statuses[(statusI + 1) % statuses.length];
 		await db.query('UPDATE books SET status = $1 WHERE id = $2', [newStatus, id]);
 
-		filterOrder.setDefault();
+		filterOrder.filter = newStatus;
 		res.redirect('/');
 	} catch (err) {
 		console.log(err);
@@ -239,7 +252,7 @@ app.get('/notes', async (req, res) => {
 			id,
 		]);
 		//console.log(result.rows);
-		res.render('notes', { notes: notesResult.rows, bookInfo: bookResult.rows[0] });
+		res.render('notes', { notes: notesResult.rows, bookInfo: bookResult.rows[0], theme });
 	} catch (err) {
 		console.log(err);
 		res.redirect('/');
@@ -250,7 +263,7 @@ app.get('/new-note', async (req, res) => {
 	let id = parseInt(req.query.id);
 	try {
 		let book = await db.query('SELECT title, id FROM books WHERE id = $1', [id]);
-		res.render('newNote', { book: book.rows[0] });
+		res.render('newNote', { book: book.rows[0], theme });
 	} catch (err) {
 		console.log(err);
 		res.redirect('/');
@@ -261,7 +274,7 @@ app.get('/edit-note', async (req, res) => {
 	let id = parseInt(req.query.id);
 	try {
 		let note = await db.query('SELECT * FROM notes WHERE id = $1', [id]);
-		res.render('editNote', { note: note.rows[0] });
+		res.render('editNote', { note: note.rows[0], theme });
 	} catch (err) {
 		console.log(err);
 		res.redirect('/');

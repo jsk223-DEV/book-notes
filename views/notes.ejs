@@ -1,6 +1,6 @@
 <%- include('partials/header.ejs') %>
 <main id="notes_main">
-	<button id="back_button" onclick="goBack()">
+	<button id="back_button" onclick="window.location.href = '/'">
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
 			width="24"
@@ -31,7 +31,7 @@
 		<% } %>
 		<h2 id="n_book_title"><%= locals.bookInfo && bookInfo.title %></h2>
 		<a id="new_note_button" href="/new-note?id=<%= locals.bookInfo.id && bookInfo.id %>"
-			>New Note</a
+			><span style="font-size: 17px">+ </span>New Note</a
 		>
 	</div>
 	<div id="notes">
@@ -54,7 +54,9 @@
 				<span class="n-text"><%= note.text ? note.text : 'empty note' %></span>
 			</div>
 		</div>
-		<% })} %>
+		<% })} else { %>
+		<div>You don't have any notes for this book yet...</div>
+		<% } %>
 	</div>
 </main>
 <%- include('partials/footer.ejs') %>

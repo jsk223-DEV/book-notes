@@ -10,9 +10,9 @@
 		<link rel="manifest" href="images/favicon/site.webmanifest" /> -->
 		<title>My Library</title>
 	</head>
-	<body>
+	<body class="">
 		<header>
-			<span id="header_title"
+			<!-- <span id="header_title"
 				><svg
 					xmlns="http://www.w3.org/2000/svg"
 					width="24"
@@ -29,39 +29,7 @@
 						d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"
 					/></svg
 				>My Library</span
-			>
-			<div id="search_bar">
-				<label for="search_input">Search: </label>
-				<select name="type" id="type_select">
-					<option value="q">Any</option>
-					<option value="author">Author</option>
-					<option value="title">Title</option>
-				</select>
-				<input
-					type="search"
-					name="search"
-					id="search_input"
-					aria-autocomplete="none"
-					onsearch="submitSearch(this.parentElement)"
-				/>
-				<button onclick="submitSearch(this.parentElement)" id="search_submit">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="15"
-						height="15"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="black"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						class="lucide lucide-search-icon lucide-search"
-					>
-						<path d="m21 21-4.34-4.34" />
-						<circle cx="11" cy="11" r="8" />
-					</svg>
-				</button>
-			</div>
+			> -->
 			<a href="/" id="home_link"
 				><svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -80,6 +48,64 @@
 						d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
 					/></svg
 			></a>
+			<div id="search_bar">
+				<label for="search_input">Search: </label>
+				<select name="type" id="type_select" title="Type of Search">
+					<option value="q">Any</option>
+					<option value="author">Author</option>
+					<option value="title">Title</option>
+				</select>
+				<input
+					type="search"
+					name="search"
+					id="search_input"
+					aria-autocomplete="none"
+					onsearch="submitSearch(this.parentElement)"
+				/>
+				<button
+					onclick="submitSearch(this.parentElement)"
+					id="search_submit"
+					title="Search"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="15"
+						height="15"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="black"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						class="lucide lucide-search-icon lucide-search"
+					>
+						<path d="m21 21-4.34-4.34" />
+						<circle cx="11" cy="11" r="8" />
+					</svg>
+				</button>
+			</div>
+			<button onclick="toggleTheme()" id="change_theme" title="Toggle Theme">
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="24"
+					height="24"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="black"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					class="lucide lucide-sun-moon-icon lucide-sun-moon"
+				>
+					<path d="M12 2v2" />
+					<path
+						d="M14.837 16.385a6 6 0 1 1-7.223-7.222c.624-.147.97.66.715 1.248a4 4 0 0 0 5.26 5.259c.589-.255 1.396.09 1.248.715"
+					/>
+					<path d="M16 12a4 4 0 0 0-4-4" />
+					<path d="m19 5-1.256 1.256" />
+					<path d="M20 12h2" />
+				</svg>
+			</button>
 		</header>
 		<% if(false) { %>
 	</body>

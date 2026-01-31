@@ -1,27 +1,73 @@
 @import url('https://fonts.googleapis.com/css2?family=Ovo&display=swap');
-:root {
+/* :root {
 	--accent: darkblue;
 	--accent2: gainsboro;
 	--buttonBG: rgb(60, 60, 60);
 	--buttonBGHover: rgb(90, 90, 90);
 	--BG: rgb(21, 21, 21);
+    --FG: rgb(30,30,30);
 	--textColor: white;
 	--textColorOnA2: black;
-	--inputBG: rgb(60, 60, 60);
-}
+	--inputBG: var(--buttonBG);
+    --boxShadow: 0 0 4px 4px var(--FG);
+} */
+/* :root {
+	--accent: darkblue;
+	--accent2: rgb(100, 116, 122);
+	--buttonBG: rgb(184, 184, 184);
+	--buttonBGHover: rgb(170, 170, 170);
+	--BG: rgb(221, 221, 221);
+	--FG: rgb(190, 190, 190);
+	--textColor: rgb(0, 0, 0);
+	--textColorOnA2: white;
+	--inputBG: var(--buttonBG);
+	--boxShadow: 0 0 4px 4px rgb(205, 205, 205);
+} */
 * {
 	box-sizing: border-box;
 	padding: 0;
 	margin: 0;
 	font-family: 'Ovo', serif;
-	color-scheme: dark;
+	/* color-scheme: light; */
+	transition: color 0.3s, background-color 0.3s, border 0.3s;
 }
 html {
 	position: relative;
 }
-body {
+body.dark-theme {
+	--accent: darkblue;
+	--accent2: gainsboro;
+	--buttonBG: rgb(60, 60, 60);
+	--buttonBGHover: rgb(90, 90, 90);
+	--BG: rgb(21, 21, 21);
+	--FG: rgb(30, 30, 30);
+	--textColor: white;
+	--textColorOnA2: black;
+	--inputBG: var(--buttonBG);
+	--boxShadow: 0 0 4px 4px var(--FG);
 	background-color: var(--BG);
 	min-height: 99vh;
+	& * {
+		color-scheme: dark;
+	}
+}
+
+body.light-theme {
+	--accent: darkblue;
+	--accent2: rgb(137, 179, 179);
+	--buttonBG: rgb(180, 180, 180);
+	--buttonBGHover: rgb(170, 170, 170);
+	--BG: rgb(230, 230, 230);
+	--FG: rgb(200, 200, 200);
+	--textColor: rgb(0, 0, 0);
+	--textColorOnA2: white;
+	--inputBG: var(--buttonBG);
+	--boxShadow: 0 0 4px 4px rgb(205, 205, 205);
+	background-color: var(--BG);
+	min-height: 99vh;
+	& * {
+		color-scheme: light;
+	}
 }
 main {
 	padding: 70px 0;
@@ -36,9 +82,12 @@ header {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	padding: 0 5px;
+	padding: 0 15px;
 	background-color: var(--accent2);
-	& #header_title {
+	& svg {
+		stroke: var(--textColorOnA2);
+	}
+	/* & #header_title {
 		font-size: 19px;
 		font-weight: 500;
 		color: var(--textColorOnA2);
@@ -46,7 +95,7 @@ header {
 			position: relative;
 			top: 4px;
 		}
-	}
+	} */
 	& #search_input,
 	#type_select {
 		height: 20px;
@@ -54,16 +103,21 @@ header {
 		outline: none;
 		border: 1px solid black;
 		padding: 2px;
-		color: var(--accent2);
+		color: var(--textColor);
 	}
 	& #type_select {
 		padding: 0;
 	}
-	& #home_link {
-		color: black;
+	& #home_link,
+	#change_theme {
 		text-decoration: none;
+		background-color: #0000;
+		border: none;
 		&:hover svg {
 			stroke: var(--accent);
+		}
+		& svg {
+			stroke: var(--textColorOnA2);
 		}
 	}
 	& label {
@@ -93,9 +147,10 @@ header {
 		border: 1px solid var(--accent2);
 		border-radius: 15px;
 		padding-right: 5px;
-		box-shadow: 0 0 4px 4px rgb(40, 40, 40);
+		box-shadow: var(--boxShadow);
 		font-size: 14px;
-		background-color: rgb(30, 30, 30);
+		background-color: var(--FG);
+		color: var(--textColor);
 		& .sb-cover {
 			width: 180px;
 			height: 240px;
@@ -136,6 +191,9 @@ header {
 				display: flex;
 				align-items: center;
 				gap: 2px;
+				& svg {
+					stroke: var(--textColor);
+				}
 			}
 			& .sb-status {
 				padding: 1px 5px;
@@ -182,6 +240,10 @@ header {
 					&:hover {
 						background-color: var(--buttonBGHover);
 					}
+					&:active {
+						background-color: var(--BG);
+						border: 1px solid var(--accent);
+					}
 				}
 				& .sb-delete {
 					color: red;
@@ -198,6 +260,7 @@ header {
 	border-bottom: 1px solid var(--accent2);
 	display: flex;
 	justify-content: space-between;
+	color: var(--textColor);
 	& > div {
 		display: flex;
 		gap: 5px;
@@ -226,6 +289,7 @@ header {
 	font-size: 17px;
 	width: 100%;
 	text-align: center;
+	color: var(--textColor);
 	& #string {
 		font-style: italic;
 	}
@@ -237,6 +301,7 @@ header {
 	grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
 	gap: 20px 15px;
 	padding: 15px;
+	color: var(--textColor);
 	& .search-result {
 		display: flex;
 		flex-direction: column;
@@ -273,12 +338,16 @@ header {
 	align-items: center;
 	gap: 5px;
 	height: fit-content;
+	color: var(--textColor);
 	& .page-nav {
 		padding: 5px 5px 3px 5px;
 		border-radius: 5px;
 		background-color: var(--buttonBG);
 		text-decoration: none;
 		border: 1px outset var(--accent2);
+		& svg {
+			stroke: var(--textColor);
+		}
 		&:not(.page-nav[href]) {
 			background-color: var(--BG);
 			border: 1px solid var(--buttonBG);
@@ -286,6 +355,10 @@ header {
 		}
 		&:hover {
 			background-color: var(--buttonBGHover);
+		}
+		&:active {
+			background-color: var(--BG);
+			border: 1px solid var(--accent);
 		}
 	}
 	& .current-page {
@@ -303,6 +376,7 @@ header {
 	gap: 15px;
 	width: auto;
 	position: relative;
+	color: var(--textColor);
 	& #back_button {
 		background-color: var(--buttonBG);
 		padding: 5px 5px 2px 5px;
@@ -311,8 +385,15 @@ header {
 		top: 70px;
 		left: 10px;
 		border: 1px outset var(--accent2);
+		& svg {
+			stroke: var(--textColor);
+		}
 		&:hover {
 			background-color: var(--buttonBGHover);
+		}
+		&:active {
+			background-color: var(--BG);
+			border: 1px solid var(--accent);
 		}
 	}
 	& #bd_info {
@@ -326,7 +407,7 @@ header {
 			width: 180px;
 			height: 240px;
 			border-radius: 15px;
-			box-shadow: 0 0 4px 4px rgb(35, 35, 35);
+			box-shadow: var(--boxShadow);
 		}
 		& #bd_info_text {
 			display: flex;
@@ -386,17 +467,22 @@ header {
 			}
 			& input:checked + label {
 				background-color: var(--BG);
-				border: 1px solid var(--accent);
+				outline: 1px solid var(--accent);
 			}
 		}
 		& #bd_covers {
-			display: flex;
+			/* display: flex;
 			justify-content: space-between;
-			flex-wrap: wrap;
+			flex-wrap: wrap; */
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
 			gap: 10px;
-			&:after {
+			/* &:after {
 				content: '';
 				flex: auto;
+			} */
+			& label {
+				width: 130px;
 			}
 			& img {
 				width: 130px;
@@ -410,6 +496,29 @@ header {
 			& .bd-cover-radio:checked + label img {
 				outline: 2px solid var(--accent2);
 			}
+			& #bd_load_covers {
+				width: 130px;
+				height: 190px;
+				border-radius: 15px;
+				cursor: pointer;
+				border: 1px outset var(--accent2);
+				background-color: var(--buttonBG);
+				color: var(--textColor);
+				font-size: 16px;
+				/* margin-left: 10px; */
+				/* display: flex;
+				flex-wrap: wrap;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center; */
+				&:hover {
+					background-color: var(--buttonBGHover);
+				}
+				&:active {
+					background-color: var(--BG);
+					border: 1px solid var(--accent);
+				}
+			}
 		}
 		& #bd_save_inputs {
 			display: flex;
@@ -422,6 +531,7 @@ header {
 				padding: 5px;
 				resize: none;
 				border-radius: 5px;
+				font-size: 16px;
 			}
 		}
 		& #bd_save_options {
@@ -449,6 +559,9 @@ header {
 					}
 					& + label {
 						cursor: pointer;
+						& svg {
+							stroke: var(--textColor);
+						}
 					}
 				}
 			}
@@ -483,6 +596,7 @@ header {
 	flex-direction: column;
 	align-items: center;
 	position: relative;
+	color: var(--textColor);
 	& #back_button {
 		background-color: var(--buttonBG);
 		padding: 5px 5px 2px 5px;
@@ -491,8 +605,15 @@ header {
 		top: 70px;
 		left: 10px;
 		border: 1px outset var(--accent2);
+		& svg {
+			stroke: var(--textColor);
+		}
 		&:hover {
 			background-color: var(--buttonBGHover);
+		}
+		&:active {
+			background-color: var(--BG);
+			border: 1px solid var(--accent);
 		}
 	}
 	& #n_book_info {
@@ -522,8 +643,13 @@ header {
 			border-radius: 5px;
 			color: var(--textColor);
 			text-decoration: none;
+			font-size: 15px;
 			&:hover {
 				background-color: var(--buttonBGHover);
+			}
+			&:active {
+				background-color: var(--BG);
+				border: 1px solid var(--accent);
 			}
 		}
 	}
@@ -577,6 +703,10 @@ header {
 					&.n-delete {
 						color: red;
 					}
+					&:active {
+						background-color: var(--BG);
+						border: 1px solid var(--accent);
+					}
 				}
 			}
 		}
@@ -603,6 +733,7 @@ header {
 #nn_form {
 	width: 85%;
 	margin: 10px auto 0 auto;
+	color: var(--textColor);
 	& input,
 	textarea {
 		background-color: var(--inputBG);
@@ -684,4 +815,5 @@ footer {
 	padding-right: 10px;
 	position: absolute;
 	bottom: 1px;
+	color: var(--textColor);
 }

@@ -44,11 +44,20 @@
 				style="display: none"
 				data-offset="0"
 				data-selected="<%= book.cover_id ? book.cover_id : '' %>"
-				data-covers="<%= book.covers ? book.covers.join('a') : '' %>"
+				data-covers="<%= book.covers ? book.covers.toString() : '' %>"
 				data-rating="<%= book.rating ? book.rating : 0 %>"
 			></div>
-			<div id="bd_covers"></div>
-			<button id="bd_load_covers" type="button" class="bd-button">Load Covers</button>
+			<div id="bd_covers">
+				<button
+					id="bd_load_covers"
+					type="button"
+					onclick="loadCovers(document.querySelector('#covers_save'))"
+				>
+					Load <br />
+					More <br />
+					Covers
+				</button>
+			</div>
 			<div id="bd_save_inputs">
 				<textarea id="bd_review" placeholder="Review this book" name="review">
 <%= book.review && book.review%></textarea
@@ -136,9 +145,6 @@
 			)
 		);
 	}
-	document.querySelector('#bd_load_covers').addEventListener('click', () => {
-		loadCovers(document.querySelector('#covers_save'));
-	});
 	loadCovers(document.querySelector('#covers_save'));
 </script>
 

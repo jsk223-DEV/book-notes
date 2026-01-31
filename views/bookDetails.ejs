@@ -20,10 +20,12 @@
 	</button>
 	<% if(locals.book) { %>
 	<div id="bd_info">
-		<% if(book.covers && book.covers.length > 0){ %>
+		<% let firstCover; if(book.covers && book.covers.length > 0){ for(let i = 0; i <
+		book.covers.length; i++) { if(book.covers[i] != -1){ firstCover = book.covers[i]; break; }
+		}}%> <% if(firstCover){ %>
 		<img
 			id="bd_first_cover"
-			src="https://covers.openlibrary.org/b/id/<%= book.covers[0] %>-M.jpg"
+			src="https://covers.openlibrary.org/b/id/<%= firstCover %>-M.jpg"
 		/>
 		<% }else{ %>
 		<img id="bd_first_cover" src="images/noBookCover.jpg" />
@@ -49,10 +51,19 @@
 				id="covers_save"
 				style="display: none"
 				data-offset="0"
-				data-covers="<%= book.covers ? book.covers.join('a') : '' %>"
+				data-covers="<%= book.covers ? book.covers.toString() : '' %>"
 			></div>
-			<div id="bd_covers"></div>
-			<button id="bd_load_covers" type="button" class="bd-button">Load Covers</button>
+			<div id="bd_covers">
+				<button
+					id="bd_load_covers"
+					type="button"
+					onclick="loadCovers(document.querySelector('#covers_save'))"
+				>
+					Load <br />
+					More <br />
+					Covers
+				</button>
+			</div>
 			<div id="bd_save_inputs">
 				<textarea id="bd_review" placeholder="Review this book" name="review"></textarea>
 				<div id="bd_save_options">
@@ -145,9 +156,6 @@
 </main>
 <script src="/js/script.js"></script>
 <script>
-	document.querySelector('#bd_load_covers').addEventListener('click', () => {
-		loadCovers(document.querySelector('#covers_save'));
-	});
 	loadCovers(document.querySelector('#covers_save'));
 </script>
 <%- include('partials/footer.ejs') %>
