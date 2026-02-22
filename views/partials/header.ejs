@@ -10,7 +10,7 @@
 		<link rel="manifest" href="images/favicon/site.webmanifest" /> -->
 		<title>My Library</title>
 	</head>
-	<body class="">
+	<body class="<%= locals.theme ? theme : '' %>">
 		<header>
 			<!-- <span id="header_title"
 				><svg
@@ -30,7 +30,7 @@
 					/></svg
 				>My Library</span
 			> -->
-			<a href="/" id="home_link"
+			<a href="/?filter=all&order=id DESC" id="home_link"
 				><svg
 					xmlns="http://www.w3.org/2000/svg"
 					width="24"
